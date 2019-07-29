@@ -14,6 +14,11 @@ namespace Composure
             Sets.Add(set);
         }
 
+        public void Add(IEnumerable<ISet> sets)
+        {
+            Sets.AddRange(sets);
+        }
+
         public IEnumerator<ISet> GetEnumerator()
         {
             return Sets.GetEnumerator();
@@ -35,12 +40,18 @@ namespace Composure
 
     public class UnionedSet : StackedSet
     {
-        readonly UnionType UnionType = UnionType.Unique;
+        public UnionType UnionType = UnionType.Unique;
 
         public UnionedSet() { }
 
-        public UnionedSet(UnionType type)
+        public UnionedSet(IEnumerable<ISet> sets)
         {
+            Add(sets);
+        }
+
+        public UnionedSet(IEnumerable<ISet> sets, UnionType type)
+        {
+            Add(sets);
             UnionType = type;
         }
 

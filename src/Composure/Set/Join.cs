@@ -10,6 +10,18 @@ namespace Composure
         public JoinType Type = JoinType.None;
         public string Alias { get; set; }
 
+        public Join()
+        {
+
+        }
+
+        public Join(IBaseSet set, string alias, JoinType type)
+        {
+            Set = set;
+            Alias = alias;
+            Type = type;
+        }
+
         IEnumerable<IEvaluatable> on;
         public IEnumerable<IEvaluatable> On
         {
