@@ -85,6 +85,22 @@ namespace Composure
         public static ColumnEval operator <=(double val, Column col) => new ColumnEval(new Expression(val), EvalType.LessThanOrEqualTo, col);
         public static ColumnEval operator <(double val, Column col) => new ColumnEval(new Expression(val), EvalType.LessThan, col);
 
+        // Column | Decimal
+        public static ColumnEval operator ==(Column col, decimal val) => new ColumnEval(col, EvalType.Equal, new Expression(val));
+        public static ColumnEval operator !=(Column col, decimal val) => new ColumnEval(col, EvalType.NotEqual, new Expression(val));
+        public static ColumnEval operator >=(Column col, decimal val) => new ColumnEval(col, EvalType.GreaterThanOrEqualTo, new Expression(val));
+        public static ColumnEval operator >(Column col, decimal val) => new ColumnEval(col, EvalType.GreaterThan, new Expression(val));
+        public static ColumnEval operator <=(Column col, decimal val) => new ColumnEval(col, EvalType.LessThanOrEqualTo, new Expression(val));
+        public static ColumnEval operator <(Column col, decimal val) => new ColumnEval(col, EvalType.LessThan, new Expression(val));
+
+        // Decimal | Column
+        public static ColumnEval operator ==(decimal val, Column col) => new ColumnEval(new Expression(val), EvalType.Equal, col);
+        public static ColumnEval operator !=(decimal val, Column col) => new ColumnEval(new Expression(val), EvalType.NotEqual, col);
+        public static ColumnEval operator >=(decimal val, Column col) => new ColumnEval(new Expression(val), EvalType.GreaterThanOrEqualTo, col);
+        public static ColumnEval operator >(decimal val, Column col) => new ColumnEval(new Expression(val), EvalType.GreaterThan, col);
+        public static ColumnEval operator <=(decimal val, Column col) => new ColumnEval(new Expression(val), EvalType.LessThanOrEqualTo, col);
+        public static ColumnEval operator <(decimal val, Column col) => new ColumnEval(new Expression(val), EvalType.LessThan, col);
+
         // Column | String
         public static ColumnEval operator ==(Column col, string val) => new ColumnEval(col, EvalType.Equal, new QuotedExpression(val));
         public static ColumnEval operator !=(Column col, string val) => new ColumnEval(col, EvalType.NotEqual, new QuotedExpression(val));
@@ -132,6 +148,14 @@ namespace Composure
         // IEnumerable<double> | Column
         public static ColumnEval operator ==(IEnumerable<double> vals, Column col) => new ColumnEval(new Expressions(vals), EvalType.In, col);
         public static ColumnEval operator !=(IEnumerable<double> vals, Column col) => new ColumnEval(new Expressions(vals), EvalType.NotIn, col);
+
+        // Column | IEnumerable<decimal>
+        public static ColumnEval operator ==(Column col, IEnumerable<decimal> vals) => new ColumnEval(col, EvalType.In, new Expressions(vals));
+        public static ColumnEval operator !=(Column col, IEnumerable<decimal> vals) => new ColumnEval(col, EvalType.NotIn, new Expressions(vals));
+
+        // IEnumerable<decimal> | Column
+        public static ColumnEval operator ==(IEnumerable<decimal> vals, Column col) => new ColumnEval(new Expressions(vals), EvalType.In, col);
+        public static ColumnEval operator !=(IEnumerable<decimal> vals, Column col) => new ColumnEval(new Expressions(vals), EvalType.NotIn, col);
     }
 
     public partial class ColumnEval
@@ -139,18 +163,21 @@ namespace Composure
         public static ColumnRangeEval operator &(ColumnEval eval, IExpression exp) => new ColumnRangeEval(eval.Column, eval.Value, exp, eval.Type == EvalType.Equal);
         public static ColumnRangeEval operator &(ColumnEval eval, int val) => new ColumnRangeEval(eval.Column, eval.Value, val, eval.Type == EvalType.Equal);
         public static ColumnRangeEval operator &(ColumnEval eval, double val) => new ColumnRangeEval(eval.Column, eval.Value, val, eval.Type == EvalType.Equal);
+        public static ColumnRangeEval operator &(ColumnEval eval, decimal val) => new ColumnRangeEval(eval.Column, eval.Value, val, eval.Type == EvalType.Equal);
         public static ColumnRangeEval operator &(ColumnEval eval, string val) => new ColumnRangeEval(eval.Column, eval.Value, new QuotedExpression(val), eval.Type == EvalType.Equal);
 
         // Expression/Number | Column | Expression/Number
         public static ExpressionRangeEval operator &(IExpression exp, ColumnEval eval) => new ExpressionRangeEval(exp, eval.Column, eval.Value);
         public static ExpressionRangeEval operator &(int val, ColumnEval eval) => new ExpressionRangeEval(new Expression(val), eval.Column, eval.Value);
         public static ExpressionRangeEval operator &(double val, ColumnEval eval) => new ExpressionRangeEval(new Expression(val), eval.Column, eval.Value);
+        public static ExpressionRangeEval operator &(decimal val, ColumnEval eval) => new ExpressionRangeEval(new Expression(val), eval.Column, eval.Value);
         public static ExpressionRangeEval operator &(string val, ColumnEval eval) => new ExpressionRangeEval(new QuotedExpression(val), eval.Column, eval.Value);
 
         // WHEN / THEN
         public static WhenThen operator |(ColumnEval eval, IExpression exp) => new WhenThen(eval, exp);
         public static WhenThen operator |(ColumnEval eval, int val) => new WhenThen(eval, new Expression(val));
         public static WhenThen operator |(ColumnEval eval, double val) => new WhenThen(eval, new Expression(val));
+        public static WhenThen operator |(ColumnEval eval, decimal val) => new WhenThen(eval, new Expression(val));
         public static WhenThen operator |(ColumnEval eval, string val) => new WhenThen(eval, new QuotedExpression(val));
     }
 
@@ -269,6 +296,22 @@ namespace Composure
         public static ExpressionEval operator <=(double val, ExpressionBase<T> exp) => new ExpressionEval(new Expression(val), EvalType.LessThanOrEqualTo, exp);
         public static ExpressionEval operator <(double val, ExpressionBase<T> exp) => new ExpressionEval(new Expression(val), EvalType.LessThan, exp);
 
+        // Expression | decimal
+        public static ExpressionEval operator ==(ExpressionBase<T> exp, decimal val) => new ExpressionEval(exp, EvalType.Equal, new Expression(val));
+        public static ExpressionEval operator !=(ExpressionBase<T> exp, decimal val) => new ExpressionEval(exp, EvalType.NotEqual, new Expression(val));
+        public static ExpressionEval operator >=(ExpressionBase<T> exp, decimal val) => new ExpressionEval(exp, EvalType.GreaterThanOrEqualTo, new Expression(val));
+        public static ExpressionEval operator >(ExpressionBase<T> exp, decimal val) => new ExpressionEval(exp, EvalType.GreaterThan, new Expression(val));
+        public static ExpressionEval operator <=(ExpressionBase<T> exp, decimal val) => new ExpressionEval(exp, EvalType.LessThanOrEqualTo, new Expression(val));
+        public static ExpressionEval operator <(ExpressionBase<T> exp, decimal val) => new ExpressionEval(exp, EvalType.LessThan, new Expression(val));
+
+        // Decimal | Expression
+        public static ExpressionEval operator ==(decimal val, ExpressionBase<T> exp) => new ExpressionEval(new Expression(val), EvalType.Equal, exp);
+        public static ExpressionEval operator !=(decimal val, ExpressionBase<T> exp) => new ExpressionEval(new Expression(val), EvalType.NotEqual, exp);
+        public static ExpressionEval operator >=(decimal val, ExpressionBase<T> exp) => new ExpressionEval(new Expression(val), EvalType.GreaterThanOrEqualTo, exp);
+        public static ExpressionEval operator >(decimal val, ExpressionBase<T> exp) => new ExpressionEval(new Expression(val), EvalType.GreaterThan, exp);
+        public static ExpressionEval operator <=(decimal val, ExpressionBase<T> exp) => new ExpressionEval(new Expression(val), EvalType.LessThanOrEqualTo, exp);
+        public static ExpressionEval operator <(decimal val, ExpressionBase<T> exp) => new ExpressionEval(new Expression(val), EvalType.LessThan, exp);
+
         // Expression | String
         public static ExpressionEval operator ==(ExpressionBase<T> exp, string val) => new ExpressionEval(exp, EvalType.Equal, new QuotedExpression(val));
         public static ExpressionEval operator !=(ExpressionBase<T> exp, string val) => new ExpressionEval(exp, EvalType.NotEqual, new QuotedExpression(val));
@@ -316,6 +359,14 @@ namespace Composure
         // IEnumerable<double> | Expression
         public static ExpressionEval operator ==(IEnumerable<double> vals, ExpressionBase<T> exp) => new ExpressionEval(new Expressions(vals), EvalType.In, exp);
         public static ExpressionEval operator !=(IEnumerable<double> vals, ExpressionBase<T> exp) => new ExpressionEval(new Expressions(vals), EvalType.NotIn, exp);
+
+        // Expression | IEnumerable<decimal>
+        public static ExpressionEval operator ==(ExpressionBase<T> exp, IEnumerable<decimal> vals) => new ExpressionEval(exp, EvalType.In, new Expressions(vals));
+        public static ExpressionEval operator !=(ExpressionBase<T> exp, IEnumerable<decimal> vals) => new ExpressionEval(exp, EvalType.NotIn, new Expressions(vals));
+
+        // IEnumerable<decimal> | Expression
+        public static ExpressionEval operator ==(IEnumerable<decimal> vals, ExpressionBase<T> exp) => new ExpressionEval(new Expressions(vals), EvalType.In, exp);
+        public static ExpressionEval operator !=(IEnumerable<decimal> vals, ExpressionBase<T> exp) => new ExpressionEval(new Expressions(vals), EvalType.NotIn, exp);
     }
 
     public partial class ExpressionEval
@@ -327,6 +378,7 @@ namespace Composure
         public static ExpressionRangeEval operator &(ExpressionEval eval, IExpression exp) => new ExpressionRangeEval(eval.Expression, eval.Value, exp, eval.Type == EvalType.Equal);
         public static ExpressionRangeEval operator &(ExpressionEval eval, int val) => new ExpressionRangeEval(eval.Expression, eval.Value, val, eval.Type == EvalType.Equal);
         public static ExpressionRangeEval operator &(ExpressionEval eval, double val) => new ExpressionRangeEval(eval.Expression, eval.Value, val, eval.Type == EvalType.Equal);
+        public static ExpressionRangeEval operator &(ExpressionEval eval, decimal val) => new ExpressionRangeEval(eval.Expression, eval.Value, val, eval.Type == EvalType.Equal);
         public static ExpressionRangeEval operator &(ExpressionEval eval, string val) => new ExpressionRangeEval(eval.Expression, eval.Value, new QuotedExpression(val), eval.Type == EvalType.Equal);
     }
 

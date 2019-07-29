@@ -56,5 +56,10 @@ namespace Composure
         {
             Initialize(expressions.Select(e => e.ToString()));
         }
+
+        public Expressions(IEnumerable<decimal> expressions)
+        {
+            Initialize(expressions.Select(e => e.ToString()));
+        }
     }
 }
