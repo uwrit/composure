@@ -1,5 +1,5 @@
 # Composure
-**Composure** is a simple SQL-authoring library for .NET. Composure allows for statically-typed SQL-like query syntax directly in C#, with minimal messy string manipulation. Composure is designed for readability, clarity, and testability, and was developed for the [Leaf Clinical Data Explorer app](https://github.com/uwrit/leaf) at the [University of Washington](http://www.washington.edu/) by Nic Dobbins [@ndobb](https://github.com/ndobb) and Cliff Spital [@cspital](https://github.com/cspital).
+**Composure** is a simple SQL-authoring library for .NET Core. Composure allows for statically-typed SQL-like query syntax directly in C#, with minimal messy string manipulation. Composure is designed for readability, clarity, and testability, and was developed for the [Leaf Clinical Data Explorer app](https://github.com/uwrit/leaf) at the [University of Washington](http://www.washington.edu/) by [@ndobb](https://github.com/ndobb) and [@cspital](https://github.com/cspital).
 
 **Note: If you are able to create and use Stored Procedures, Views, and other SQL objects, please read no further and do so!** 
 
@@ -30,7 +30,7 @@ $ dotnet build -c Release
 - [UNION and wrap as subquery](#union-and-wrap-as-subquery)
 - [CASE WHEN statements](#case-when-statements)
 - [Using inheritance for predefined sets and intellisense](#using-inheritance-for-predefined-sets-and-intellisense)
-- [Query Syntax cheat-sheet](#query-syntax-cheat-sheet)
+- [Syntax cheat-sheet](#syntax-cheat-sheet)
 - [Caveats](#caveats)
 
 ## Basic SELECT from a table/view
@@ -124,7 +124,7 @@ var query = new NamedSet
 ```
 ...and the resulting SQL would have been identical. **Composure** supports both the shorthand and longhand query syntax, so choose the style that works best for you.
 
-Skip to the [Query Syntax cheat-sheet](#query-syntax-cheat-sheet) below for a quick reference.
+Skip to the [Syntax cheat-sheet](#syntax-cheat-sheet) below for a quick reference.
 
 ## Basic JOIN
 ```c#
@@ -397,7 +397,7 @@ ORDER BY
     C.CategoryName
 ```
 
-# Query Syntax cheat-sheet
+# Syntax cheat-sheet
 ```c#
  deliciousness > 3                               // Deliciousness > 3
  deliciousness == 3 & 5                          // Deliciousness BETWEEN 3 AND 5
