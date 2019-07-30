@@ -227,7 +227,7 @@ ORDER BY
 var allColumns = new[] { "Name", "Category", "Deliciousness" };
 
 // Reusable function to get columns for each set
-Column[] getColumns() => allColumns.Select(c => new Column(c)).ToArray();
+var getColumns() => allColumns.Select(c => new Column(c)).ToArray();
 
 // Sets
 var set1 = new NamedSet { Select = getColumns(), From = "dbo.Food", Alias = "F" };
@@ -244,11 +244,11 @@ wrapper.ToString();
 Returns:
 ```sql
 SELECT 
-    W.FoodName
+    W.Name
   , W.Category
   , W.Deliciousness 
 FROM 
-    (SELECT F.FoodName
+     (SELECT F.Name
            , F.Category
            , F.Deliciousness 
       FROM dbo.Food AS F 
