@@ -30,6 +30,12 @@ namespace Composure
             Set = set;
         }
 
+        public Column(IColumn column, IAliasedSet set)
+        {
+            Name = column.Name;
+            Set = set;
+        }
+
         public void AssignParentSet(IAliasedSet parent)
         {
             Set = Set ?? parent;
