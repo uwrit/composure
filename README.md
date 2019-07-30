@@ -5,7 +5,23 @@
 
 > In addition to certain performance gains and so on, precompiled SQL drastically reduces the risk of [SQL injection](https://en.wikipedia.org/wiki/SQL_injection) and other security concerns related to dynamically creating queries. It also allows separation of database and app code, often making for cleaner, more maintainable code bases.
 
-So. If you're still here, then you are one of the brave (or unlucky) souls that may find Composure useful. Let's get started!
+Also note that **Composure is *not*** an object-relational-mapper, and doesn't handle SQL connections or execute queries itself. Libraries such as [Dapper](https://stackexchange.github.io/Dapper/) do a great job of that already. 
+
+Rather, **Composure** allows you to reason about complex SQL queries in an object-oriented, visually intuition fashion using a simple domain-specific-language and operators. Let's get started!
+
+## Installation
+Load from Nuget via the `dotnet CLI`:
+```bash
+$ dotnet add package Composure --version 1.0.0
+```
+or build locally:
+```bash
+$ git clone https://github.com/uwrit/composure.git
+$ cd composure/src/Composure
+$ dotnet build -c Release
+
+# Outputs dll to /bin/Release/netcoreapp2.2/
+```
 
 - [Basic SELECT from a table/view](#basic-select-from-a-tableview)
 - [Nested WHERE conditions](#nested-where-conditions)
@@ -15,6 +31,7 @@ So. If you're still here, then you are one of the brave (or unlucky) souls that 
 - [CASE WHEN statements](#case-when-statements)
 - [Using inheritance for predefined sets and intellisense](#using-inheritance-for-predefined-sets-and-intellisense)
 - [Query Syntax cheat-sheet](#query-syntax-cheat-sheet)
+- [Caveats](#caveats)
 
 ## Basic SELECT from a table/view
 ```c#
@@ -296,7 +313,7 @@ query.ToString();
 Returns:
 ```sql
 SELECT 
-    FoodName
+    Name
   , Category
   , CASE 
          WHEN Category = 'fruit' THEN 'It''s a fruit' 
