@@ -1,13 +1,22 @@
 # Composure
-**Composure** is a simple SQL-authoring library for .NET. Composure allows for statically-typed SQL-like query syntax directly in C#, with minimal messy string manipulation. Composure is designed for readability, clarity, and testability, and was developed for the [Leaf Clinical Data Explorer app](https://github.com/uwrit/leaf) by Nic Dobbins (@ndobb) and Cliff Spital (@cspital) at the University of Washington.
+**Composure** is a simple SQL-authoring library for .NET. Composure allows for statically-typed SQL-like query syntax directly in C#, with minimal messy string manipulation. Composure is designed for readability, clarity, and testability, and was developed for the [Leaf Clinical Data Explorer app](https://github.com/uwrit/leaf) at the [University of Washington](http://www.washington.edu/) by Nic Dobbins [@ndobb](https://github.com/ndobb) and Cliff Spital [@cspital](https://github.com/cspital).
 
 **Note: If you are able to create and use Stored Procedures, Views, and other SQL objects, please read no further and do so!** 
 
 > In addition to certain performance gains and so on, precompiled SQL drastically reduces the risk of [SQL injection](https://en.wikipedia.org/wiki/SQL_injection) and other security concerns related to dynamically creating queries. It also allows separation of database and app code, often making for cleaner, more maintainable code bases.
 
-So. If you're still here, then you are one of the brave (or unlucky) souls that may find Composure useful. Let's get started! 
+So. If you're still here, then you are one of the brave (or unlucky) souls that may find Composure useful. Let's get started!
 
-# SELECT from a table/view
+- [Basic SELECT from a table/view](#basic-select-from-a-tableview)
+- [Nested WHERE conditions](#nested-where-conditions)
+- [Basic JOIN](#basic-join)
+- [JOIN and GROUP BY](#join-and-group-by)
+- [UNION and wrap as subquery](#union-and-wrap-as-subquery)
+- [CASE WHEN statements](#case-when-statements)
+- [Using inheritance for predefined sets and intellisense](#using-inheritance-for-predefined-sets-and-intellisense)
+- [Query Syntax cheat-sheet](#query-syntax-cheat-sheet)
+
+## Basic SELECT from a table/view
 ```c#
 // Columns
 var name = new Column("Name");
@@ -26,7 +35,7 @@ var query = new NamedSet
     }
 };
 
-return query.ToString();
+query.ToString();
 ```
 Returns:
 ```sql
@@ -44,7 +53,7 @@ And that's it! Note that these examples show formatted SQL only for readability.
 
 Let's try a more interesting example.
 
-# Nested WHERE conditions
+## Nested WHERE conditions
 ```c#
 // WHERE clause conditions
 var isDelicious = deliciousness > 3;
@@ -61,7 +70,7 @@ var query = new NamedSet
     }
 };
 
-return query.ToString();
+query.ToString();
 ```
 Returns:
 ```sql
@@ -77,23 +86,23 @@ WHERE
          Category = 'fruit'
     )
 ```
-At this point if you are thinking the above is readable and clear, great! If however the above syntax looks like voodoo, that's okay too! Composure is strongly typed, and leverages [operator overloading](https://en.wikipedia.org/wiki/Operator_overloading) to allow for concise, simple code, that compiles to plain ol' SQL.
+At this point if you are thinking the above is readable and clear, great! If however the above syntax looks like voodoo, that's okay too! **Composure** is strongly typed, and leverages [operator overloading](https://en.wikipedia.org/wiki/Operator_overloading) to allow for concise, simple code, that compiles to plain ol' SQL.
 
 Note that we could have just as easily written the above as:
 ```c#
-var isDelicious = new ColumnEvaluation(deliciousness, EvaluationType.GreaterThan, new Expression(3));
-var isFruit = new ColumnEvaluation(category, EvaluationType.Equal, newQuotedExpression("fruit"));
+var isDelicious = new ColumnEval(deliciousness, EvaluationType.GreaterThan, new Expression(3));
+var isFruit = new ColumnEval(category, EvaluationType.Equal, newQuotedExpression("fruit"));
 
 // Get query
 var query = new NamedSet
 {
-    Select = new List<ISelectable> { name, category, deliciousness },
-    From = "dbo.Food",
-    Where = new List<IEvaluatable>
+    Select = new ISelectable[] { name, category, deliciousness },
+    From = new RawSet("dbo.Food"),
+    Where = new IEvaluatable[]
     {
-        new OrEvaluation
+        new OrEval
         (
-            new AndEvaluation(isDelicious, new NotEvaluation(isFruit)),
+            new AndEval(isDelicious, new NotEval(isFruit)),
             isFruit
         )
     }
@@ -101,9 +110,9 @@ var query = new NamedSet
 ```
 ...and the resulting SQL would have been identical. **Composure** supports both the shorthand and longhand query syntax, so choose the style that works best for you.
 
-Skip to the [Query Syntax Cheat-sheet](#cheat-sheet) below for a quick reference.
+Skip to the [Query Syntax cheat-sheet](#query-syntax-cheat-sheet) below for a quick reference.
 
-## JOIN
+## Basic JOIN
 ```c#
 // Sets
 var set1 = new RawSet("dbo.Food");
@@ -132,9 +141,9 @@ var query = new JoinedSet
     OrderBy = new[] { categoryName, name }
 };
 
-return query.ToString();
+query.ToString();
 ```
-returns
+Returns:
 ```sql
 SELECT 
     F.Name
@@ -190,7 +199,7 @@ var query = new JoinedSet
     OrderBy = new[] { categoryName }
 };
 
-return query.ToString();
+query.ToString();
 ```
 Returns:
 ```sql
@@ -215,13 +224,13 @@ ORDER BY
     C.CategoryName
 ```
 
-## UNION and wrap
+## UNION and wrap as subquery
 ```c#
 // Columns
 var allColumns = new[] { "Name", "Category", "Deliciousness" };
 
 // Reusable function to get columns for each set
-List<Column> getColumns() => allColumns.Select(c => new Column(c)).ToList();
+Column[] getColumns() => allColumns.Select(c => new Column(c)).ToArray();
 
 // Sets
 var set1 = new NamedSet { Select = getColumns(), From = "dbo.Food", Alias = "F" };
@@ -233,7 +242,7 @@ var union = new UnionedSet { set1, set2 };
 // Get wrapper query
 var wrapper = new VirtualSet { Select = getColumns(), From = union, Alias = "W" };
 
-return wrapper.ToString();
+wrapper.ToString();
 ```
 Returns:
 ```sql
@@ -268,7 +277,7 @@ var isVeggie = category == "vegetable";
 // Case when
 var foodCases = new CaseWhen
 {
-    Cases = new List<WhenThen>
+    Cases = new[]
     {
         isFruit                | "It's a fruit",
         isDelicious & isVeggie | "It's delicious and a vegetable",
@@ -285,7 +294,7 @@ var query = new NamedSet
     From = "dbo.Food",
 };
 
-return query.ToString();
+query.ToString();
 ```
 Returns:
 ```sql
@@ -303,7 +312,7 @@ FROM
     dbo.Food
 ```
 
-## Adding functionality via inheritance for predefined sets and static typing
+## Using inheritance for predefined sets and intellisense
 ```c#
 public class FoodsAndCategoriesSet : JoinedSet
 {
@@ -354,7 +363,7 @@ q.Where = new[]
 };
 q.OrderBy = new[] { q.CategoryName };
 
-return q.ToString();
+q.ToString();
 ```
 Returns:
 ```sql
@@ -374,7 +383,7 @@ ORDER BY
     C.CategoryName
 ```
 
-# Cheat-sheet
+# Query Syntax cheat-sheet
 ```c#
  deliciousness > 3                               // Deliciousness > 3
  deliciousness == 3 & 5                          // Deliciousness BETWEEN 3 AND 5
