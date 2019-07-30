@@ -27,8 +27,8 @@ var deliciousness = new Column("Deliciousness");
 var query = new NamedSet
 {
     Select = new[] { name, category, deliciousness },
-    From = "dbo.Food",
-    Where = new[]
+    From   = "dbo.Food",
+    Where  = new[]
     {
         deliciousness > 3,
         category == "fruit"
@@ -63,11 +63,8 @@ var isFruit = category == "fruit";
 var query = new NamedSet
 {
     Select = new[] { name, category, deliciousness },
-    From = "dbo.Food",
-    Where = new[]
-    {
-        (isDelicious & !isFruit) | isFruit
-    }
+    From   = "dbo.Food",
+    Where  = new[] { (isDelicious & !isFruit) | isFruit }
 };
 
 query.ToString();
@@ -136,8 +133,8 @@ var categoryName = new Column("CategoryName", j2);
 // Get query
 var query = new JoinedSet
 {
-    Select = new[] { name, deliciousness, categoryName },
-    From = new[] { j1, j2 },
+    Select  = new[] { name, deliciousness, categoryName },
+    From    = new[] { j1, j2 },
     OrderBy = new[] { categoryName, name }
 };
 
@@ -191,11 +188,11 @@ var maxDeliciousness = new ExpressedColumn("MaxDeliciousness", calcMaxDeliciousn
 // Get query
 var query = new JoinedSet
 {
-    Select = new[] { categoryId, categoryName, totalCount, maxDeliciousness },
-    From = new[] { j1, j2 },
-    Where = new[] { deliciousness > 3 },
+    Select  = new[] { categoryId, categoryName, totalCount, maxDeliciousness },
+    From    = new[] { j1, j2 },
+    Where   = new[] { deliciousness > 3 },
     GroupBy = new[] { categoryId, categoryName },
-    Having = new[] { calcMaxDeliciousness >= 5 },
+    Having  = new[] { calcMaxDeliciousness >= 5 },
     OrderBy = new[] { categoryName }
 };
 
@@ -290,8 +287,8 @@ var foodCases = new CaseWhen
 // Get query
 var query = new NamedSet
 {
-    Select = new[]  { name, new ExpressedColumn("FoodCases", foodCases) },
-    From = "dbo.Food",
+    Select = new[] { name, new ExpressedColumn("FoodCases", foodCases) },
+    From   = "dbo.Food",
 };
 
 query.ToString();
@@ -394,7 +391,7 @@ ORDER BY
 
  new CaseWhen
  {
-     Cases = new List<WhenThen>                  
+     Cases = new[]               
      {                                           // CASE 
          deliciousness > 5  | "Super delicious", //      WHEN Deliciousness > 5  THEN 'Super delicious'
          deliciousness <= 4 | "So so"            //      WHEN Deliciousness <= 4 THEN 'So so'
