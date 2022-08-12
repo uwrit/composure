@@ -12,7 +12,7 @@ Rather, **Composure** allows you to reason about complex SQL queries in an objec
 ## Installation
 Load from Nuget via the `dotnet CLI`:
 ```bash
-$ dotnet add package Composure --version 1.0.0
+$ dotnet add package Composure --version 1.1.0
 ```
 or build locally:
 ```bash
