@@ -23,6 +23,11 @@ namespace Composure
             Evaluatables = new List<IEvaluatable> { evaluatable1, evaluatable2 };
         }
 
+        protected ConditionalEval(params IEvaluatable[] evaluatables)
+        {
+            Evaluatables = evaluatables.ToList();
+        }
+
         public void Add(IEvaluatable evaluatable)
         {
             Evaluatables.Add(evaluatable);
@@ -61,11 +66,15 @@ namespace Composure
         }
 
         public OrEval(IEvaluatable evaluatable1, IEvaluatable evaluatable2) : base(evaluatable1, evaluatable2) { }
+
+        public OrEval(params IEvaluatable[] evaluatables) : base(evaluatables) { }
     }
 
     public partial class AndEval : ConditionalEval
     {
         public AndEval(IEvaluatable evaluatable1, IEvaluatable evaluatable2) : base(evaluatable1, evaluatable2) { }
+
+        public AndEval(params IEvaluatable[] evaluatables) : base(evaluatables) { }
 
         public override string ToString()
         {
