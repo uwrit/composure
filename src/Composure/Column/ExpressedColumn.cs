@@ -9,7 +9,7 @@ namespace Composure
 
         public ExpressedColumn() { }
 
-        public ExpressedColumn(string name, IExpression expression)
+        public ExpressedColumn(IExpression expression, string name)
         {
             Name = name;
             Expression = expression;
