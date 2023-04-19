@@ -27,7 +27,7 @@ namespace Composure
             string from = From.ToSubQueryString();
             return string.IsNullOrEmpty(Alias)
                 ? $"{Sql.FROM} {from}"
-                : $"{Sql.FROM} {from} {Sql.AS} {Alias}";
+                : $"{Sql.FROM} {from} {Alias}";
         }
     }
 }

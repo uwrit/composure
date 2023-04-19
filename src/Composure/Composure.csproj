@@ -1,8 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-    <ReleaseVersion>1.0</ReleaseVersion>
+    <TargetFramework>net6.0</TargetFramework>
+    <ReleaseVersion>1.3</ReleaseVersion>
+    <PackageId>Composure</PackageId>
+    <Version>1.3</Version>
+    <Authors>Nic Dobbins</Authors>
+    <Company>University of Washington</Company>
   </PropertyGroup>
 
 </Project>
